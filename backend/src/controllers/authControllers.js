@@ -1,38 +1,33 @@
 const User = require("../models/userModel");
+const {
+	validationSignup,
+	validationLogin,
+} = require("../utils/authValidators");
+const bcrypt = require("bcryptjs");
 
 const signupController = async (req, res) => {
 	try {
-		const { email, password, ...otherDetails } = req.body;
-		const OTHER_DETAILS = [
-			"firstName",
-			"lastName",
-			"age",
-			"gender",
-			"photoUrl",
-			"about",
-			"skills",
-		];
+		const { firstName, lastName, email, password, age, skills } = req.body;
+		validationSignup(req);
 
-		if (!email || !password) {
-			res.status(400).json({
-				success: false,
-				message: "Incomplete credentials",
-			});
-		}
+		const salt = await bcrypt.genSalt(10);
+		const hashedPassword = await bcrypt.hash(password, salt);
 
-		Object.keys(otherDetails).forEach((key) => {
-			if (!OTHER_DETAILS.includes(key)) {
-				throw new Error(`Not a valid property: ${key}`);
-			}
+		const userToSave = await User({
+			firstName,
+			lastName,
+			email,
+			password: hashedPassword,
+			age,
+			skills,
 		});
 
-		const userToInsert = new User({ email, password, ...otherDetails });
-		await userToInsert.save();
+		await userToSave.save();
 
 		res.status(200).json({
 			success: true,
 			message: "User inserted succesfully",
-			user: userToInsert,
+			user: userToSave,
 		});
 	} catch (error) {
 		console.error(`Error duting signup: ${error.message}`);
@@ -44,4 +39,47 @@ const signupController = async (req, res) => {
 	}
 };
 
-module.exports = { signupController };
+const loginController = async (req, res) => {
+	try {
+		const { email, password } = req.body;
+		validationLogin(req);
+
+		const user = await User.findOne({
+			email: email,
+		});
+
+		if (!user) {
+			return res.status(400).json({
+				succes: false,
+				message: "User not found with the associated email",
+			});
+		}
+
+		const hashedPassword = user.password;
+		const check = await bcrypt.compare(password, hashedPassword);
+		if (!check) {
+			console.error(
+				`Password ${password} does not match with the hash ${hashedPassword}`
+			);
+			return res.status(400).json({
+				success: false,
+				message: "Invalid credentials",
+			});
+		}
+
+		return res.status(200).json({
+			success: true,
+			message: "User logged in successfully",
+			user,
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({
+			success: false,
+			message: "Internal server error",
+			error: error.message,
+		});
+	}
+};
+
+module.exports = { signupController, loginController };
