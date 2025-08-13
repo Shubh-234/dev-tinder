@@ -27,7 +27,6 @@ const signupController = async (req, res) => {
 		});
 
 		const userToInsert = new User({ email, password, ...otherDetails });
-		console.log(userToInsert);
 		await userToInsert.save();
 
 		res.status(200).json({
@@ -36,7 +35,7 @@ const signupController = async (req, res) => {
 			user: userToInsert,
 		});
 	} catch (error) {
-		console.log(`Error duting signup: ${error.message}`);
+		console.error(`Error duting signup: ${error.message}`);
 		return res.status(500).json({
 			success: false,
 			message: "Internal server error",

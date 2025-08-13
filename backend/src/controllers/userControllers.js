@@ -54,14 +54,32 @@ const getUserByEmail = async (req, res) => {
 
 const updateUser = async (req, res) => {
 	try {
-		const { _id, ...updatedFields } = req.body;
-		if (!_id) {
+		const { id } = req.params;
+		if (!id) {
 			return res.status(400).json({
 				success: false,
 				message: "Please enter id to update",
 			});
 		}
-		const updatedUser = await User.findByIdAndUpdate(_id, updatedFields, {
+		const NOT_ALLOWED_UPDATES = [
+			"firstName",
+			"lastName",
+			"age",
+			"gender",
+			"photoUrl",
+			"about",
+			"skills",
+			"password",
+		];
+		const updatedFields = req.body;
+
+		Object.keys(!updatedFields).forEach((key) => {
+			if (NOT_ALLOWED_UPDATES.includes(key)) {
+				throw new Error(`Not allowed to update the following property: ${key}`);
+			}
+		});
+
+		const updatedUser = await User.findByIdAndUpdate(id, updatedFields, {
 			runValidators: true,
 			returnDocument: "after",
 		});

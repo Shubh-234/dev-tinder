@@ -1,11 +1,11 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
+const express = require("express");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
-const authRoutes = require('./routes/authRoutes')
-const userRoutes = require('./routes/userRoutes')
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
 
-const User = require('./models/userModel');
+const { handleErrors } = require("./middlewares.js/errorHandler");
 
 // const deleteUsers = async () => {
 //     try{
@@ -24,26 +24,26 @@ const User = require('./models/userModel');
 //     }
 // }
 
-
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
 
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-.then(() => {
-    console.log("Connected to database successfully");
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    })
-}).catch (error => {
-    console.error(`Error connecting to the database: ${error}`);
-    console.log(error.message)
-})
+mongoose
+	.connect(process.env.MONGO_URI)
+	.then(() => {
+		console.log("Connected to database successfully");
+		app.listen(PORT, () => {
+			console.log(`Server is running on port ${PORT}`);
+		});
+	})
+	.catch((error) => {
+		console.error(`Error connecting to the database: ${error}`);
+		console.log(error.message);
+	});
 
+app.use(handleErrors);
 
-app.use('/api/auth',authRoutes)
-app.use('/api/feed',userRoutes)
-
-
+app.use("/api/auth", authRoutes);
+app.use("/api/feed", userRoutes);
