@@ -1,16 +1,19 @@
-const express = require('express');
-const {getAllUsers,getUserByEmail, updateUser, deleteUser} = require('../controllers/userControllers')
+const express = require("express");
+const {
+	getAllUsers,
+	getUserByEmail,
+	updateUser,
+	deleteUser,
+} = require("../controllers/userControllers");
 
 const router = express.Router();
 
-router.get('/users',getAllUsers)
+router.get("/users", getAllUsers);
 
-router.get('/user', getUserByEmail)
+router.get("/user", getUserByEmail);
 
-router.patch('update',updateUser)
+router.patch("/user/update", updateUser);
 
-router.delete('/delete',deleteUser)
-
-
+router.delete("user//delete", deleteUser);
 
 module.exports = router;
