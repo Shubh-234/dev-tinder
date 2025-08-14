@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 const getAllUsers = async (req, res) => {
 	try {
@@ -107,7 +108,7 @@ const deleteUser = async (req, res) => {
 			message: "User deleted succesfully",
 		});
 	} catch (error) {
-		console.error(`Error encountered while deleting user ${error.message}`);
+		console.error(error);
 		return res.status(500).json({
 			success: false,
 			message: "Internal server error",
@@ -115,4 +116,37 @@ const deleteUser = async (req, res) => {
 	}
 };
 
-module.exports = { getAllUsers, getUserByEmail, updateUser, deleteUser };
+const getProfile = async (req, res) => {
+	try {
+		const cookies = req.cookies;
+		const { token } = cookies;
+
+		const decoded = jwt.decode(token, "secretkey");
+
+		const { userId } = decoded;
+
+		const user = await User.findById(userId);
+
+		if (!user) {
+			return res.status(400).json({
+				success: false,
+				message: "User does not exist",
+			});
+		}
+		res.send(user);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({
+			success: false,
+			message: "Internal server error",
+		});
+	}
+};
+
+module.exports = {
+	getAllUsers,
+	getUserByEmail,
+	updateUser,
+	deleteUser,
+	getProfile,
+};

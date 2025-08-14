@@ -4,6 +4,7 @@ const {
 	validationLogin,
 } = require("../utils/authValidators");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const signupController = async (req, res) => {
 	try {
@@ -34,7 +35,6 @@ const signupController = async (req, res) => {
 		return res.status(500).json({
 			success: false,
 			message: "Internal server error",
-			error: error.message,
 		});
 	}
 };
@@ -66,18 +66,22 @@ const loginController = async (req, res) => {
 				message: "Invalid credentials",
 			});
 		}
+		const { _id } = user;
+
+		const token = jwt.sign({ userId: _id }, "secretkey");
+		res.cookie("token", token);
 
 		return res.status(200).json({
 			success: true,
 			message: "User logged in successfully",
 			user,
+			token,
 		});
 	} catch (error) {
 		console.error(error);
 		return res.status(500).json({
 			success: false,
 			message: "Internal server error",
-			error: error.message,
 		});
 	}
 };

@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 
 const { handleErrors } = require("./middlewares.js/errorHandler");
+const cookieParser = require("cookie-parser");
 
 // const deleteUsers = async () => {
 //     try{
@@ -29,6 +30,7 @@ const app = express();
 const PORT = process.env.PORT;
 
 app.use(express.json());
+app.use(cookieParser());
 
 mongoose
 	.connect(process.env.MONGO_URI)
