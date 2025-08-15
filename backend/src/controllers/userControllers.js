@@ -1,3 +1,4 @@
+const { authMiddleware } = require("../middlewares.js/authMiddleware");
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
@@ -118,22 +119,28 @@ const deleteUser = async (req, res) => {
 
 const getProfile = async (req, res) => {
 	try {
-		const cookies = req.cookies;
-		const { token } = cookies;
-
-		const decoded = jwt.decode(token, "secretkey");
-
-		const { userId } = decoded;
-
-		const user = await User.findById(userId);
+		const user = req?.user;
 
 		if (!user) {
 			return res.status(400).json({
 				success: false,
-				message: "User does not exist",
+				message: "Invlalid token or user",
 			});
 		}
 		res.send(user);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({
+			success: false,
+			message: "Internal server error",
+		});
+	}
+};
+
+const sendConnectionRequest = async (req, res) => {
+	try {
+		const user = req.user;
+		res.send("sending connection request from user" + user.firstName);
 	} catch (error) {
 		console.error(error);
 		return res.status(500).json({
@@ -149,4 +156,5 @@ module.exports = {
 	updateUser,
 	deleteUser,
 	getProfile,
+	sendConnectionRequest,
 };

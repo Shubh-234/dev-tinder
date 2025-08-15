@@ -68,7 +68,7 @@ const loginController = async (req, res) => {
 		}
 		const { _id } = user;
 
-		const token = jwt.sign({ userId: _id }, "secretkey");
+		const token = jwt.sign({ userId: _id }, "secretkey", { expiresIn: "7d" });
 		res.cookie("token", token);
 
 		return res.status(200).json({
