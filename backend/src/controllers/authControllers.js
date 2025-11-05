@@ -56,8 +56,9 @@ const loginController = async (req, res) => {
 		}
 
 		const hashedPassword = user.password;
-		const check = await bcrypt.compare(password, hashedPassword);
-		if (!check) {
+		const isValidPassword =  await user.checkPassword(password);
+		
+		if (!isValidPassword) {
 			console.error(
 				`Password ${password} does not match with the hash ${hashedPassword}`
 			);
@@ -66,9 +67,8 @@ const loginController = async (req, res) => {
 				message: "Invalid credentials",
 			});
 		}
-		const { _id } = user;
 
-		const token = jwt.sign({ userId: _id }, "secretkey", { expiresIn: "7d" });
+		const token = await user.generateJWT();
 		res.cookie("token", token);
 
 		return res.status(200).json({
