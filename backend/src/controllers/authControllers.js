@@ -31,7 +31,7 @@ const signupController = async (req, res) => {
 			user: userToSave,
 		});
 	} catch (error) {
-		console.error(`Error duting signup: ${error.message}`);
+		console.error(`Error during signup: ${error.message}`);
 		return res.status(500).json({
 			success: false,
 			message: "Internal server error",

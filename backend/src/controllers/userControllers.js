@@ -22,7 +22,7 @@ const getAllUsers = async (req, res) => {
 const getUserByEmail = async (req, res) => {
 	try {
 		const { email } = req.body;
-		if (req.body || !email) {
+		if (!email) {
 			console.log("Please enter the email");
 			res.status(400).json({
 				success: false,

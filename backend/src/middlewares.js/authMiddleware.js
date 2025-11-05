@@ -8,11 +8,7 @@ const authMiddleware = async (req, res, next) => {
 		throw new Error("Invalid token");
 	}
 
-	console.log("decoding token" + token);
 	const decoded = jwt.verify(token, "secretkey");
-
-	console.log("decoded");
-	console.log(decoded);
 
 	if (!decoded) {
 		throw new Error("Invalid token");

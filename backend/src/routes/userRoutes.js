@@ -11,7 +11,7 @@ const { authMiddleware } = require("../middlewares.js/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getProfile);
+router.get("/profile", authMiddleware, getProfile);
 
 router.get("/users", getAllUsers);
 
