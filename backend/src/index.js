@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const profileRoutes = require("./routes/profileRoutes");
+const requestRoutes = require("./routes/requestRoutes");
 
 const { handleErrors } = require("./middlewares.js/errorHandler");
 const cookieParser = require("cookie-parser");
@@ -31,4 +33,6 @@ mongoose
 app.use(handleErrors);
 
 app.use("/api/auth", authRoutes);
-app.use("/api/feed", userRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/request", requestRoutes);

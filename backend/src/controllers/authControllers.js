@@ -51,7 +51,7 @@ const loginController = async (req, res) => {
 		if (!user) {
 			return res.status(400).json({
 				succes: false,
-				message: "User not found with the associated email",
+				message: "Invalid credentials",
 			});
 		}
 
@@ -69,7 +69,9 @@ const loginController = async (req, res) => {
 		}
 
 		const token = await user.generateJWT();
-		res.cookie("token", token);
+		res.cookie("token", token,{
+			expires: new Date(Date.now() + 8*3600000)
+		});
 
 		return res.status(200).json({
 			success: true,
@@ -86,4 +88,25 @@ const loginController = async (req, res) => {
 	}
 };
 
-module.exports = { signupController, loginController };
+const logoutController = async (req,res) => {
+	try{
+		const {token} = req?.cookies;
+		if(!token){
+			return res.status(200).json({
+				message: 'User not logged in'
+			})
+		}
+
+		res.clearCookie('token');
+
+		return res.status(200).json({
+			success : true,
+			message: "User logged out succesfully",
+		})
+
+	}catch(error){
+		console.error(`Error while logging out: ${error.message}`)
+	}
+}
+
+module.exports = { signupController, loginController, logoutController };
