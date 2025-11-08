@@ -27,12 +27,12 @@ mongoose
 	})
 	.catch((error) => {
 		console.error(`Error connecting to the database: ${error}`);
-		console.log(error.message);
+		console.log(error);
 	});
 
 app.use(handleErrors);
 
 app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/request", requestRoutes);

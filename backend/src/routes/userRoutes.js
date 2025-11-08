@@ -8,12 +8,12 @@ const {
 
 const router = express.Router();
 
-router.get("/users", getAllUsers);
+router.get("/", getAllUsers);
 
-router.get("/user", getUserByEmail);
+router.get("/get", getUserByEmail);
 
-router.patch("/user/update/:id", updateUser);
+router.patch("/update/:id", updateUser);
 
-router.delete("/user/delete/:id", deleteUser);
+router.delete("/delete/:id", deleteUser);
 
 module.exports = router;

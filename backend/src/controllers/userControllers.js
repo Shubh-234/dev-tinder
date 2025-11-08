@@ -63,6 +63,16 @@ const updateUser = async (req, res) => {
 				message: "Please enter id to update",
 			});
 		}
+
+		const userToupdate = await User.findById(id);
+		
+		if(!userToupdate){
+			return res.status(400).json({
+				success: false,
+				message: "User not found"
+			})
+		}
+		
 		const NOT_ALLOWED_UPDATES = [
 			"firstName",
 			"lastName",
@@ -102,7 +112,16 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
 	try {
-		const { _id } = req.body;
+		const { _id } = req?.params;
+
+		const userTodelete = await User.findById(_id);
+		if(!userTodelete){
+			return res.status(400).json({
+				success: false,
+				message: "User not found"
+			})
+		}
+
 		await User.findByIdAndDelete(_id);
 		return res.status(204).json({
 			success: true,

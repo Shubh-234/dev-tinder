@@ -1,4 +1,5 @@
 const { validateProfileEdit,validateNewPassword } = require('../utils/profileValidation');
+const bcrypt = require("bcryptjs")
 
 const getProfile = async (req, res) => {
 	try {
@@ -58,7 +59,7 @@ const editPassword = async (req,res) => {
 		await validateNewPassword(req);
 
 		const loggedInUser = req?.user;
-		loggedInUser.password = await bcrypt.hash(req.body.password, 10);
+		loggedInUser.password = await bcrypt.hash(req?.body?.password, 10);
 		await loggedInUser.save();
 
 		return res.status(200).json({
@@ -73,7 +74,7 @@ const editPassword = async (req,res) => {
 				message : error.message
 			})
 		}else{
-			console.error(`Error encountered while editing password: ${error.message}`);
+			console.error(`Error encountered while editing password: ${error}`);
 			return res.status(500).json({
 				success: false,
 				message: "Internal server error"
