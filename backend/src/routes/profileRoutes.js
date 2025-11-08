@@ -1,5 +1,5 @@
 const express = require("express");
-const { getProfile,editProfile } = require("../controllers/profileControllers");
+const { getProfile,editProfile, editPassword } = require("../controllers/profileControllers");
 const { authMiddleware } = require("../middlewares.js/authMiddleware");
 
 const router = express.Router();
@@ -7,5 +7,7 @@ const router = express.Router();
 router.get("/view", authMiddleware, getProfile);
 
 router.patch("/edit", authMiddleware, editProfile);
+
+router.patch('/edit-password',authMiddleware,editPassword)
 
 module.exports = router;

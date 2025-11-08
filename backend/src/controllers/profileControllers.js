@@ -1,4 +1,4 @@
-const { validateProfileEdit } = require('../utils/profileValidation');
+const { validateProfileEdit,validateNewPassword } = require('../utils/profileValidation');
 
 const getProfile = async (req, res) => {
 	try {
@@ -52,7 +52,38 @@ const editProfile = async (req, res) => {
 	}
 }
 
+const editPassword = async (req,res) => {
+	try {
+
+		await validateNewPassword(req);
+
+		const loggedInUser = req?.user;
+		loggedInUser.password = await bcrypt.hash(req.body.password, 10);
+		await loggedInUser.save();
+
+		return res.status(200).json({
+			success: true,
+			message: "Password updated successfully"
+		})
+
+	} catch (error) {
+		if(error.message.includes("password")){
+			return res.status(400).json({
+				success: false,
+				message : error.message
+			})
+		}else{
+			console.error(`Error encountered while editing password: ${error.message}`);
+			return res.status(500).json({
+				success: false,
+				message: "Internal server error"
+			})
+		}
+	}
+}
+
 module.exports = {
 	getProfile,
-	editProfile
+	editProfile,
+	editPassword
 };
