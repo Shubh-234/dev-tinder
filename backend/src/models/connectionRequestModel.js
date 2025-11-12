@@ -20,6 +20,7 @@ const connectionRequestSchema = new mongoose.Schema({
     timestamps: true
 });
 
+connectionRequestSchema.index({fromUserId: 1, toUserId: 1})
 //a user cannot send a connection request to himself
 connectionRequestSchema.pre("save", function (next) {
     if(this?.fromUserId.equals(this?.toUserId)){

@@ -86,5 +86,7 @@ userSchema.methods.checkPassword = async function (passwordInputFromUser) {
 	return passwordCheck;
 }
 
+userSchema.index({firstName: 1, lastName: 1});
+
 const User = mongoose.model("User", userSchema);
 module.exports = User;
