@@ -59,6 +59,57 @@ const sendConnectionRequest = async (req, res) => {
 	}
 };
 
+const reviewConnectionRequest = async (req,res) => {
+	try {
+		const user = req?.user;
+		const{status,requestId} = req?.params;
+
+		const validStatuses = ["accepted","rejected"];
+
+		if(!validStatuses.includes(status)){
+			return res.status(400).json({
+				success: false,
+				message: "Invalid status"
+			})
+		}
+
+		if(!status || !requestId){
+			return res.status(400).json({
+				success : false,
+				message : "Invalid parameters"
+			})
+		}
+
+		const connectionRequest = await ConnectionRequest.findOne({
+			_id: requestId,
+			toUserId: user._id,
+			status: "interested"
+		})
+
+		if(!connectionRequest){
+			return res.status(404).json({
+				success: false,
+				message: "Connection request not found"
+			})
+		}
+
+		connectionRequest.status = status;
+		await connectionRequest.save();
+		return res.status(200).json({
+			success: true,
+			message: `Connection request from ${connectionRequest.fromUserId} to ${user._id} ${status}`,
+			data: connectionRequest
+		})		
+	} catch (error) {
+		console.error(`Error occurred in the review connection request router ${error.message}`);
+		return res.status(500).json({
+			success: false,
+			message: "Internal server error"
+		})
+	}
+}
+
 module.exports = {
 	sendConnectionRequest,
+	reviewConnectionRequest
 };
