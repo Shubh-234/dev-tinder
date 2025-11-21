@@ -1,4 +1,5 @@
 const { authMiddleware } = require("../middlewares.js/authMiddleware");
+const ConnectionRequestModel = require("../models/connectionRequestModel");
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
@@ -136,9 +137,30 @@ const deleteUser = async (req, res) => {
 	}
 };
 
+const getUserConnectionRequests = async (req,res) => {
+	try {
+		const loggedInUser = req?.user;
+		const connetionRequests = await ConnectionRequestModel.find({
+			toUserId: loggedInUser._id,
+			status: "interested"
+		}).populate("fromUserId",["firstName","lastName","gender","age","photoUrl"])
+		return res.status(200).json({
+			success: true,
+			data: connetionRequests
+		})
+	} catch (error) {
+		console.error(`Error encountered in getUserConnectionRequests controller: ${error}`)
+		return res.status(500).json({
+			success: false,
+			message: "Internal server error"
+		})
+	}
+}
+
 module.exports = {
 	getAllUsers,
 	getUserByEmail,
 	updateUser,
 	deleteUser,
+	getUserConnectionRequests
 };
