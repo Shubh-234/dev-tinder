@@ -192,11 +192,52 @@ const getUserConnnections = async (req,res) => {
 	}
 }
 
+const getUserFeed = async (req,res) => {
+	try {
+		const {user} = req;
+		const connectionRequests = await ConnectionRequestModel.find({
+			$or: [
+				{fromUserId: user._id},
+				{toUserId: user._id}
+			]
+		}).populate("fromUserId",["_id","firstName"]).populate("toUserId",["_id","firstName"])
+
+		let notFetchUsers = [];
+		connectionRequests.map((connectionRequest) => {
+			if(connectionRequest.fromUserId?.id.toString() === user?._id.toString()){
+				notFetchUsers.push(connectionRequest.toUserId._id)
+			}else{
+				notFetchUsers.push(connectionRequest.fromUserId._id)
+			}
+		})
+
+		const userFeed = await User.find({
+			_id: {$nin: [user?._id,...notFetchUsers]}
+		})
+
+		const mappedUsers = userFeed.map((user) => {
+			return user.firstName
+		})
+		return res.status(200).json({
+			success : true,
+			message : "User feed retreived",
+			data : userFeed
+		})
+	} catch (error) {
+		console.error(`Error in feed api : ${error}`);
+		return res.status(500).json({
+			success : false,
+			message : "Internal server error"
+		})
+	}
+}
+
 module.exports = {
 	getAllUsers,
 	getUserByEmail,
 	updateUser,
 	deleteUser,
 	getUserConnectionRequests,
-	getUserConnnections
+	getUserConnnections,
+	getUserFeed
 };

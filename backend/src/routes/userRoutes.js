@@ -5,7 +5,8 @@ const {
 	updateUser,
 	deleteUser,
 	getUserConnectionRequests,
-	getUserConnnections
+	getUserConnnections,
+	getUserFeed
 } = require("../controllers/userControllers");
 const { authMiddleware } = require("../middlewares.js/authMiddleware");
 
@@ -22,5 +23,7 @@ router.delete("/delete/:id", deleteUser);
 router.get("/requests/receive",authMiddleware,getUserConnectionRequests)
 
 router.get("/connections",authMiddleware,getUserConnnections)
+
+router.get('/feed',authMiddleware,getUserFeed)
 
 module.exports = router;
