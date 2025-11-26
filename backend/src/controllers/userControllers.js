@@ -1,7 +1,5 @@
-const { authMiddleware } = require("../middlewares.js/authMiddleware");
 const ConnectionRequestModel = require("../models/connectionRequestModel");
 const User = require("../models/userModel");
-const jwt = require("jsonwebtoken");
 
 const getAllUsers = async (req, res) => {
 	try {
