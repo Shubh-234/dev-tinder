@@ -157,10 +157,38 @@ const getUserConnectionRequests = async (req,res) => {
 	}
 }
 
+const getUserConnnections = async (req,res) => {
+	try {
+		const {user} = req;
+		if(!user) {
+			return res.status(404).json({
+				success: false,
+				message: "User not found"
+			})
+		}
+		const connections = await ConnectionRequestModel.find({
+			$or: [
+				{toUserId: user._id, status: "accepted"},
+				{fromUserId: user._id, status: "accepted"}
+			]
+		})
+
+		const data = connections;
+		return res.status(200).json({data})
+	} catch (error) {
+		console.error(`Error in getUserConnections controller ${error}`);
+		return res.status(500).json({
+			success: false,
+			message: "Internal server error"
+		})
+	}
+}
+
 module.exports = {
 	getAllUsers,
 	getUserByEmail,
 	updateUser,
 	deleteUser,
-	getUserConnectionRequests
+	getUserConnectionRequests,
+	getUserConnnections
 };
