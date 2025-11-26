@@ -108,8 +108,27 @@ const reviewConnectionRequest = async (req,res) => {
 		})
 	}
 }
+const dummycode = async (req,res) => {
+	try {
+		const {user} = req
+		const accepted = await ConnectionRequest.find({
+			toUserId: user?._id
+		}).populate("fromUserId")
+		const sent = await ConnectionRequest.find({
+			fromUserId: user?.id
+		}).populate("toUserId")
+		return res.status(200).json({
+			accepted,
+			sent
+		})
+	} catch (error) {
+		console.error(error)
+		return res.status(500);
+	}
+}
 
 module.exports = {
 	sendConnectionRequest,
-	reviewConnectionRequest
+	reviewConnectionRequest,
+	dummycode
 };

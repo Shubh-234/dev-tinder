@@ -172,8 +172,18 @@ const getUserConnnections = async (req,res) => {
 				{fromUserId: user._id, status: "accepted"}
 			]
 		})
+		.populate("fromUserId",["firstName","lastName","skills","age","gender"])
+		.populate("toUserId",["firstName","lastName","skills","age","gender"]);
 
-		const data = connections;
+
+		const data = connections.map((connection) => {
+			if(connection.fromUserId._id.toString() === user?._id.toString()){
+				return connection.toUserId
+			}
+			return connection?.fromUserId;
+		})
+
+		
 		return res.status(200).json({data})
 	} catch (error) {
 		console.error(`Error in getUserConnections controller ${error}`);
