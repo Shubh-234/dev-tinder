@@ -199,6 +199,11 @@ const getUserConnnections = async (req,res) => {
 const getUserFeed = async (req,res) => {
 	try {
 		const {user} = req;
+		const page = req?.query?.page || 1;
+		let limit = req?.query?.limit || 5
+		limit = limit > 100 ? 50 : limit;
+
+		const skip  = limit*(page-1);
 		const connectionRequests = await ConnectionRequestModel.find({
 			$or: [
 				{fromUserId: user._id},
@@ -217,11 +222,13 @@ const getUserFeed = async (req,res) => {
 
 		const userFeed = await User.find({
 			_id: {$nin: [user?._id,...notFetchUsers]}
-		})
+		}).select("firstName","lastName","age","gender","skills").skip(skip).limit(limit)
 
 		return res.status(200).json({
 			success : true,
 			message : "User feed retreived",
+			page: page,
+			limit,
 			data : userFeed
 		})
 	} catch (error) {
