@@ -182,7 +182,11 @@ const getUserConnnections = async (req,res) => {
 		})
 
 		
-		return res.status(200).json({data})
+		return res.status(200).json({
+			success : true,
+			message : "User connections retreived",
+			data
+		})
 	} catch (error) {
 		console.error(`Error in getUserConnections controller ${error}`);
 		return res.status(500).json({
@@ -215,9 +219,6 @@ const getUserFeed = async (req,res) => {
 			_id: {$nin: [user?._id,...notFetchUsers]}
 		})
 
-		const mappedUsers = userFeed.map((user) => {
-			return user.firstName
-		})
 		return res.status(200).json({
 			success : true,
 			message : "User feed retreived",
