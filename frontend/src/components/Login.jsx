@@ -36,15 +36,12 @@ const Login = () => {
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4 py-12">
 			<div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-				{/* Header */}
 				<div className="text-center mb-8">
 					<h1 className="text-4xl font-bold text-blue-600 mb-2">Dev-Tinder</h1>
 					<p className="text-gray-600">Connect with fellow developers</p>
 				</div>
 
-				{/* Login Form */}
 				<form onSubmit={handleLogin} className="space-y-5">
-					{/* Email Field */}
 					<div className="w-full">
 						<label
 							className="block text-sm font-medium text-gray-700 mb-2"
@@ -62,7 +59,6 @@ const Login = () => {
 						/>
 					</div>
 
-					{/* Password Field */}
 					<div className="w-full">
 						<label
 							className="block text-sm font-medium text-gray-700 mb-2"
@@ -87,7 +83,6 @@ const Login = () => {
 						</div>
 					</div>
 
-					{/* Login Button */}
 					<button
 						type="submit"
 						disabled={isLoading}
@@ -113,7 +108,6 @@ const Login = () => {
 					</div>
 				</div>
 
-				{/* Sign Up Link */}
 				<div className="text-center">
 					<p className="text-sm text-gray-600">
 						Don't have an account?{" "}

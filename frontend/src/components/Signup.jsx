@@ -40,7 +40,9 @@ const Signup = () => {
 					{/* Name Fields - Side by Side */}
 					<div className="grid grid-cols-2 gap-4">
 						<div className="w-full">
-							<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="firstName">
+							<label
+								className="block text-sm font-medium text-gray-700 mb-2"
+								htmlFor="firstName">
 								First Name
 							</label>
 							<input
@@ -55,7 +57,9 @@ const Signup = () => {
 						</div>
 
 						<div className="w-full">
-							<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="lastName">
+							<label
+								className="block text-sm font-medium text-gray-700 mb-2"
+								htmlFor="lastName">
 								Last Name
 							</label>
 							<input
@@ -72,7 +76,9 @@ const Signup = () => {
 
 					{/* Email Field */}
 					<div className="w-full">
-						<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="email">
+						<label
+							className="block text-sm font-medium text-gray-700 mb-2"
+							htmlFor="email">
 							Email
 						</label>
 						<input
@@ -88,7 +94,9 @@ const Signup = () => {
 
 					{/* Password Field */}
 					<div className="w-full">
-						<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="password">
+						<label
+							className="block text-sm font-medium text-gray-700 mb-2"
+							htmlFor="password">
 							Password
 						</label>
 						<input
@@ -132,7 +140,9 @@ const Signup = () => {
 				<div className="text-center">
 					<p className="text-sm text-gray-600">
 						Already have an account?{" "}
-						<a href="#" className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">
+						<a
+							href="#"
+							className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">
 							Login
 						</a>
 					</p>
