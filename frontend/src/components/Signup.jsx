@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 
 const Signup = () => {
@@ -14,6 +13,7 @@ const Signup = () => {
 			method: "POST",
 			body: JSON.stringify({ firstName, lastName, email, password }),
 			headers: { "Content-Type": "application/json" },
+			credentials: "include",
 		};
 
 		const response = await fetch(
@@ -22,89 +22,120 @@ const Signup = () => {
 		);
 		const data = await response.json();
 		console.log("response", data);
+		setIsLoading(false);
 		alert(data.message);
 	};
-	return (
-		<div className="min-h-screen bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10 flex items-center justify-center px-4 py-12">
-			<div className="card w-full max-w-md bg-base-100 shadow-2xl">
-				<div className="card-body">
-					{/* Header */}
-					<div className="text-center mb-6">
-						<h1 className="text-4xl font-bold text-primary mb-2">Dev-Tinder</h1>
-						<p className="text-base-content/70">
-							Welcome Aboard, Please Sign Up to Continue
-						</p>
-					</div>
 
-					{/* Login Form */}
-					<form onSubmit={handleSubmit} className="space-y-4">
-						{/* Email Field */}
-						<div className="form-control w-full">
-							<label className="label" htmlFor="firstName">
-								<span className="label-text font-medium">First Name</span>
+	return (
+		<div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4 py-12">
+			<div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+				{/* Header */}
+				<div className="text-center mb-8">
+					<h1 className="text-4xl font-bold text-blue-600 mb-2">Dev-Tinder</h1>
+					<p className="text-gray-600">Create your developer profile</p>
+				</div>
+
+				{/* Signup Form */}
+				<form onSubmit={handleSubmit} className="space-y-4">
+					{/* Name Fields - Side by Side */}
+					<div className="grid grid-cols-2 gap-4">
+						<div className="w-full">
+							<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="firstName">
+								First Name
 							</label>
 							<input
 								type="text"
 								id="firstName"
-								placeholder="Enter your first name"
+								placeholder="John"
 								value={firstName}
 								onChange={(e) => setFirstName(e.target.value)}
-								className="input input-bordered input-primary w-full focus:outline-none focus:ring-2 focus:ring-primary/50"
+								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
 								required
 							/>
-							<label className="label" htmlFor="lastName">
-								<span className="label-text font-medium">Last Name</span>
+						</div>
+
+						<div className="w-full">
+							<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="lastName">
+								Last Name
 							</label>
 							<input
 								type="text"
 								id="lastName"
-								placeholder="Enter your last name"
+								placeholder="Doe"
 								value={lastName}
 								onChange={(e) => setLastName(e.target.value)}
-								className="input input-bordered input-primary w-full focus:outline-none focus:ring-2 focus:ring-primary/50"
-								required
-							/>
-							<label className="label" htmlFor="email">
-								<span className="label-text font-medium">Email</span>
-							</label>
-							<input
-								type="email"
-								id="email"
-								placeholder="Enter your email"
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-								className="input input-bordered input-primary w-full focus:outline-none focus:ring-2 focus:ring-primary/50"
+								className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
 								required
 							/>
 						</div>
+					</div>
 
-						{/* Password Field */}
-						<div className="form-control w-full">
-							<label className="label" htmlFor="password">
-								<span className="label-text font-medium">Password</span>
-							</label>
-							<input
-								type="password"
-								id="password"
-								placeholder="Password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								className="input input-bordered input-primary w-full focus:outline-none focus:ring-2 focus:ring-primary/50"
-								required
-							/>
-						</div>
+					{/* Email Field */}
+					<div className="w-full">
+						<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="email">
+							Email
+						</label>
+						<input
+							type="email"
+							id="email"
+							placeholder="Enter your email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+							required
+						/>
+					</div>
 
-						{/* Login Button */}
-						<div className="form-control mt-6">
-							<button
-								type="submit"
-								className={`btn btn-primary w-full ${
-									isLoading ? "loading" : ""
-								}`}>
-								{isLoading ? "Signing up..." : "Sign Up"}
-							</button>
-						</div>
-					</form>
+					{/* Password Field */}
+					<div className="w-full">
+						<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="password">
+							Password
+						</label>
+						<input
+							type="password"
+							id="password"
+							placeholder="Create a strong password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+							required
+						/>
+					</div>
+
+					{/* Signup Button */}
+					<button
+						type="submit"
+						disabled={isLoading}
+						className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6">
+						{isLoading ? (
+							<>
+								<span className="loading loading-spinner loading-sm"></span>
+								Creating account...
+							</>
+						) : (
+							"Sign Up"
+						)}
+					</button>
+				</form>
+
+				{/* Divider */}
+				<div className="relative my-6">
+					<div className="absolute inset-0 flex items-center">
+						<div className="w-full border-t border-gray-300"></div>
+					</div>
+					<div className="relative flex justify-center text-sm">
+						<span className="px-4 bg-white text-gray-500">OR</span>
+					</div>
+				</div>
+
+				{/* Login Link */}
+				<div className="text-center">
+					<p className="text-sm text-gray-600">
+						Already have an account?{" "}
+						<a href="#" className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">
+							Login
+						</a>
+					</p>
 				</div>
 			</div>
 		</div>

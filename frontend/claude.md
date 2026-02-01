@@ -3,31 +3,38 @@
 ## Overview
 This document defines the UI/UX standards for the Dev-Tinder application. All components must follow these guidelines to ensure consistency and maintainability.
 
+**Design Philosophy**: Modern, sleek, blue-themed interface with clean lines, subtle gradients, and smooth interactions.
+
 ---
 
 ## Color Palette
 
-### Primary Colors (Blue Theme)
-- **Primary**: `#3b82f6` (Blue 500) - Main brand color, CTAs, links
-- **Primary Focus**: `#2563eb` (Blue 600) - Hover states
-- **Primary Content**: `#ffffff` - Text on primary backgrounds
+### Primary Blue Theme
+- **Primary Blue**: `bg-blue-600` (#3b82f6) - Main brand color, buttons, links
+- **Primary Hover**: `bg-blue-700` (#2563eb) - Hover states for buttons
+- **Primary Light**: `bg-blue-50` (#eff6ff) - Backgrounds, subtle highlights
+- **Primary Text**: `text-blue-600` - Links and emphasized text
 
-### Secondary Colors
-- **Secondary**: `#8b5cf6` (Violet 500) - Accents, highlights
-- **Secondary Focus**: `#7c3aed` (Violet 600) - Hover states
-- **Secondary Content**: `#ffffff` - Text on secondary backgrounds
+### Background Colors
+- **White**: `bg-white` (#ffffff) - Cards, navbar, footer
+- **Light Gray**: `bg-gray-50` - Page backgrounds
+- **Gradient**: `bg-gradient-to-br from-blue-50 via-white to-indigo-50` - Auth pages
 
-### Neutral Colors
-- **Base 100**: `#ffffff` - Main background
-- **Base 200**: `#f3f4f6` (Gray 100) - Card backgrounds
-- **Base 300**: `#e5e7eb` (Gray 200) - Borders, dividers
-- **Base Content**: `#1f2937` (Gray 800) - Primary text
+### Text Colors
+- **Primary Text**: `text-gray-900` (#111827) - Headings
+- **Secondary Text**: `text-gray-600` (#4b5563) - Body text
+- **Muted Text**: `text-gray-500` (#6b7280) - Helper text
+
+### Border Colors
+- **Default Border**: `border-gray-300` - Input fields, cards
+- **Light Border**: `border-gray-200` - Dividers, separators
+- **Focus Border**: `border-blue-500` - Focused inputs
 
 ### Semantic Colors
-- **Success**: `#10b981` (Green 500)
-- **Warning**: `#f59e0b` (Amber 500)
-- **Error**: `#ef4444` (Red 500)
-- **Info**: `#06b6d4` (Cyan 500)
+- **Success**: `bg-green-500` (#10b981)
+- **Warning**: `bg-yellow-500` (#f59e0b)
+- **Error**: `bg-red-500` (#ef4444)
+- **Info**: `bg-blue-500` (#3b82f6)
 
 ---
 
@@ -80,36 +87,51 @@ This document defines the UI/UX standards for the Dev-Tinder application. All co
 
 ### Buttons
 
-**Primary Button**
+**Primary Button (Blue)**
 ```jsx
-<button className="btn btn-primary">
+<button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
   Click Me
 </button>
 ```
 
-**Secondary Button**
+**Primary Button with Loading**
 ```jsx
-<button className="btn btn-secondary">
+<button
+  disabled={isLoading}
+  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+  {isLoading ? (
+    <>
+      <span className="loading loading-spinner loading-sm"></span>
+      Loading...
+    </>
+  ) : (
+    "Click Me"
+  )}
+</button>
+```
+
+**Secondary Button (Outline)**
+```jsx
+<button className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold py-3 px-6 rounded-lg transition duration-200">
   Click Me
 </button>
 ```
 
-**Outline Button**
+**Danger Button**
 ```jsx
-<button className="btn btn-outline btn-primary">
-  Click Me
+<button className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+  Delete
 </button>
 ```
 
 **Button Sizes**
-- `btn-xs` - Extra small
-- `btn-sm` - Small
-- `btn-md` - Medium (default)
-- `btn-lg` - Large
+- Small: `py-2 px-4 text-sm`
+- Medium: `py-3 px-6` (default)
+- Large: `py-4 px-8 text-lg`
 
 **Button States**
-- `btn-disabled` or `disabled` attribute
-- `loading` class for loading state
+- Disabled: `disabled:opacity-50 disabled:cursor-not-allowed`
+- Loading: Use DaisyUI spinner `<span className="loading loading-spinner loading-sm"></span>`
 
 ---
 
@@ -117,42 +139,48 @@ This document defines the UI/UX standards for the Dev-Tinder application. All co
 
 **Input Fields**
 ```jsx
-<div className="form-control w-full max-w-xs">
-  <label className="label">
-    <span className="label-text">Email</span>
+<div className="w-full">
+  <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="email">
+    Email
   </label>
   <input
-    type="text"
-    placeholder="Type here"
-    className="input input-bordered w-full"
+    type="email"
+    id="email"
+    placeholder="Enter your email"
+    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
   />
-  <label className="label">
-    <span className="label-text-alt">Helper text goes here</span>
-  </label>
 </div>
 ```
 
-**Input Variants**
-- `input-primary` - Primary themed input
-- `input-bordered` - With border (default)
-- `input-ghost` - Minimal style
-- `input-error` - Error state
-- `input-success` - Success state
+**Input with Error**
+```jsx
+<div className="w-full">
+  <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="email">
+    Email
+  </label>
+  <input
+    type="email"
+    className="w-full px-4 py-3 border border-red-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+  />
+  <p className="mt-1 text-sm text-red-600">Please enter a valid email</p>
+</div>
+```
 
 **Textarea**
 ```jsx
 <textarea
-  className="textarea textarea-bordered w-full"
-  placeholder="Bio"
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+  rows="4"
+  placeholder="Enter your bio..."
 ></textarea>
 ```
 
 **Select/Dropdown**
 ```jsx
-<select className="select select-bordered w-full">
-  <option disabled selected>Pick one</option>
-  <option>Option 1</option>
-  <option>Option 2</option>
+<select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+  <option value="">Select an option</option>
+  <option value="1">Option 1</option>
+  <option value="2">Option 2</option>
 </select>
 ```
 
@@ -162,26 +190,24 @@ This document defines the UI/UX standards for the Dev-Tinder application. All co
 
 **Basic Card**
 ```jsx
-<div className="card bg-base-100 shadow-xl">
-  <div className="card-body">
-    <h2 className="card-title">Card Title</h2>
-    <p>Card content goes here</p>
-    <div className="card-actions justify-end">
-      <button className="btn btn-primary">Action</button>
-    </div>
+<div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
+  <h2 className="text-xl font-bold text-gray-900 mb-2">Card Title</h2>
+  <p className="text-gray-600 mb-4">Card content goes here</p>
+  <div className="flex justify-end">
+    <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+      Action
+    </button>
   </div>
 </div>
 ```
 
 **Card with Image**
 ```jsx
-<div className="card bg-base-100 shadow-xl">
-  <figure>
-    <img src="/image.jpg" alt="Description" />
-  </figure>
-  <div className="card-body">
-    <h2 className="card-title">Card Title</h2>
-    <p>Card content</p>
+<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+  <img src="/image.jpg" alt="Description" className="w-full h-48 object-cover" />
+  <div className="p-6">
+    <h2 className="text-xl font-bold text-gray-900 mb-2">Card Title</h2>
+    <p className="text-gray-600">Card content</p>
   </div>
 </div>
 ```
@@ -190,24 +216,24 @@ This document defines the UI/UX standards for the Dev-Tinder application. All co
 
 ### Layout Containers
 
-**Page Container**
+**Full Page with Gradient Background (Auth Pages)**
 ```jsx
-<div className="min-h-screen bg-base-200">
+<div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4 py-12">
   {/* Page content */}
 </div>
 ```
 
-**Content Container**
+**Main Content Container**
 ```jsx
-<div className="container mx-auto px-4 md:px-8 lg:px-16 py-8">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   {/* Content */}
 </div>
 ```
 
-**Centered Container**
+**Centered Auth Card**
 ```jsx
-<div className="flex justify-center items-center min-h-screen">
-  {/* Centered content */}
+<div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+  {/* Form content */}
 </div>
 ```
 
@@ -220,6 +246,11 @@ This document defines the UI/UX standards for the Dev-Tinder application. All co
 
 {/* 3 columns */}
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {/* Items */}
+</div>
+
+{/* 4 columns */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
   {/* Items */}
 </div>
 ```
@@ -324,39 +355,72 @@ This document defines the UI/UX standards for the Dev-Tinder application. All co
 ## Common Patterns
 
 ### Authentication Pages (Login/Signup)
-- Centered card layout
-- Max width: `max-w-md`
-- Gradient or solid background
-- Clear CTA buttons
-- Links for navigation
+```jsx
+<div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4 py-12">
+  <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+    <div className="text-center mb-8">
+      <h1 className="text-4xl font-bold text-blue-600 mb-2">Dev-Tinder</h1>
+      <p className="text-gray-600">Tagline here</p>
+    </div>
+    {/* Form here */}
+  </div>
+</div>
+```
+
+### Navbar
+```jsx
+<nav className="bg-white border-b border-gray-200 shadow-sm">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex justify-between items-center h-16">
+      <a href="/" className="text-2xl font-bold text-blue-600">Dev-Tinder</a>
+      {/* Nav items */}
+    </div>
+  </div>
+</nav>
+```
+
+### Footer
+```jsx
+<footer className="bg-white border-t border-gray-200 mt-auto">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    {/* Footer content */}
+  </div>
+</footer>
+```
 
 ### Dashboard/Feed Pages
-- Grid or masonry layout
-- Card-based content
-- Infinite scroll or pagination
-- Filter/search functionality
-
-### Profile Pages
-- Avatar at top
-- Two-column layout (info + content)
-- Tabbed navigation for different sections
+- White background with subtle shadows
+- Grid layout with responsive columns
+- Card-based content with rounded corners
+- Blue accent colors for CTAs
 
 ### Forms
-- Group related fields
-- Use `form-control` wrapper
-- Show validation inline
-- Disable submit during processing
-- Clear success/error feedback
+- Label above input: `text-sm font-medium text-gray-700 mb-2`
+- Input styles: `px-4 py-3 border border-gray-300 rounded-lg`
+- Focus ring: `focus:ring-2 focus:ring-blue-500`
+- Show validation inline with red text
+- Disable submit button during loading
+- Use loading spinner from DaisyUI
 
 ---
 
-## DaisyUI Theme Configuration
+## CSS Framework Usage
 
-The custom theme is configured in `tailwind.config.js` with the following settings:
-- Primary color: Blue (#3b82f6)
-- Secondary color: Violet (#8b5cf6)
-- Base background: White
-- Clean, modern aesthetic
+**Primary: Tailwind CSS Utility Classes**
+- Use Tailwind utility classes for all styling
+- Blue theme: `bg-blue-600`, `text-blue-600`, `hover:bg-blue-700`
+- Spacing: Tailwind scale (`px-4`, `py-3`, `gap-6`, etc.)
+- Responsive: Mobile-first with `sm:`, `md:`, `lg:`, `xl:` prefixes
+
+**DaisyUI Components (Limited Use)**
+- Only use for: dropdown menus, loading spinner
+- Dropdown: `dropdown dropdown-end` with `menu dropdown-content`
+- Loading: `<span className="loading loading-spinner loading-sm"></span>`
+- Badge: `badge badge-sm` with custom colors
+
+**Avoid**
+- Don't use `btn`, `input`, `card`, `form-control` classes from DaisyUI
+- Use Tailwind utilities instead for consistency
 
 ---
 
@@ -365,11 +429,13 @@ The custom theme is configured in `tailwind.config.js` with the following settin
 ```
 src/
 ├── components/
-│   ├── common/        # Reusable components (Button, Input, Card, etc.)
-│   ├── layout/        # Layout components (Navbar, Footer, Sidebar)
-│   └── pages/         # Page-specific components
+│   ├── Login.jsx
+│   ├── Signup.jsx
+│   ├── Navbar.jsx
+│   ├── Footer.jsx
+│   └── ...
 ├── styles/
-│   └── index.css      # Global styles, Tailwind imports
+│   └── index.css      # Tailwind imports only
 └── assets/            # Images, icons, fonts
 ```
 
@@ -407,15 +473,60 @@ src/
 ## Quick Reference
 
 ### Most Used Classes
-- Layout: `flex`, `grid`, `container`, `mx-auto`
-- Spacing: `p-4`, `m-4`, `gap-4`, `space-y-4`
-- Colors: `bg-primary`, `text-primary`, `border-base-300`
-- Typography: `text-lg`, `font-bold`, `text-center`
-- Buttons: `btn`, `btn-primary`, `btn-outline`
-- Inputs: `input`, `input-bordered`, `form-control`
-- Cards: `card`, `card-body`, `shadow-xl`
+
+**Colors**
+- Blue button: `bg-blue-600 hover:bg-blue-700 text-white`
+- Blue text: `text-blue-600`
+- Gray text: `text-gray-600`, `text-gray-700`, `text-gray-900`
+- Borders: `border-gray-300`, `border-gray-200`
+
+**Layout**
+- Container: `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`
+- Flexbox: `flex justify-between items-center gap-4`
+- Grid: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`
+
+**Spacing**
+- Padding: `p-4`, `p-6`, `p-8`, `px-4 py-3`
+- Margin: `mb-2`, `mb-4`, `mb-8`, `mt-6`
+- Gap: `gap-4`, `gap-6`, `space-y-4`, `space-y-5`
+
+**Typography**
+- Heading: `text-4xl font-bold text-blue-600`
+- Body: `text-gray-600`, `text-sm`, `text-base`
+- Label: `text-sm font-medium text-gray-700`
+
+**Components**
+- Button: `bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200`
+- Input: `w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`
+- Card: `bg-white rounded-2xl shadow-xl border border-gray-100 p-6`
+
+**Backgrounds**
+- White: `bg-white`
+- Gradient: `bg-gradient-to-br from-blue-50 via-white to-indigo-50`
+- Light: `bg-gray-50`
+
+**Borders & Shadows**
+- Border: `border border-gray-100`, `border-t border-gray-200`
+- Shadow: `shadow-sm`, `shadow-xl`
+- Rounded: `rounded-lg`, `rounded-2xl`, `rounded-full`
+
+**Interactive States**
+- Hover: `hover:bg-blue-700`, `hover:text-blue-700`
+- Focus: `focus:outline-none focus:ring-2 focus:ring-blue-500`
+- Disabled: `disabled:opacity-50 disabled:cursor-not-allowed`
+- Transition: `transition duration-200`
 
 ---
 
 **Last Updated**: February 2026
 **Maintained by**: Claude Code
+
+## Design Summary
+
+**Color Scheme**: Modern blue theme with clean gradients
+**Primary Color**: Blue 600 (#3b82f6)
+**Framework**: Tailwind CSS with minimal DaisyUI
+**Style**: Clean, sleek, modern with smooth transitions
+**Buttons**: Always blue (`bg-blue-600 hover:bg-blue-700`)
+**Forms**: Consistent input styling with blue focus rings
+**Layout**: White cards on gradient backgrounds for auth, white backgrounds for main app
