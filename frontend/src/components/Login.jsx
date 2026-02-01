@@ -12,9 +12,11 @@ const Login = () => {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ email, password }),
+			credentials: "include",
 		};
-		const response = (
-			await fetch("http://localhost:7777/api/auth/login", requestOptions)
+		const response = await fetch(
+			"http://localhost:7777/api/auth/login",
+			requestOptions,
 		).then((res) => res.json());
 		console.log("response", response);
 		setIsLoading(false);
