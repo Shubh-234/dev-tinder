@@ -1,9 +1,15 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { addUser } from "../store/slice/userSlice";
 
 const Login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
@@ -19,6 +25,10 @@ const Login = () => {
 			requestOptions,
 		).then((res) => res.json());
 		console.log("response", response);
+		if (response.success && response?.user) {
+			dispatch(addUser(response.user));
+			navigate("/");
+		}
 		setIsLoading(false);
 		alert(response.message);
 	};
@@ -36,7 +46,9 @@ const Login = () => {
 				<form onSubmit={handleLogin} className="space-y-5">
 					{/* Email Field */}
 					<div className="w-full">
-						<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="email">
+						<label
+							className="block text-sm font-medium text-gray-700 mb-2"
+							htmlFor="email">
 							Email
 						</label>
 						<input
@@ -52,7 +64,9 @@ const Login = () => {
 
 					{/* Password Field */}
 					<div className="w-full">
-						<label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="password">
+						<label
+							className="block text-sm font-medium text-gray-700 mb-2"
+							htmlFor="password">
 							Password
 						</label>
 						<input
@@ -65,7 +79,9 @@ const Login = () => {
 							required
 						/>
 						<div className="mt-2 text-right">
-							<a href="#" className="text-sm text-blue-600 hover:text-blue-700 hover:underline">
+							<a
+								href="#"
+								className="text-sm text-blue-600 hover:text-blue-700 hover:underline">
 								Forgot password?
 							</a>
 						</div>
@@ -101,7 +117,9 @@ const Login = () => {
 				<div className="text-center">
 					<p className="text-sm text-gray-600">
 						Don't have an account?{" "}
-						<a href="#" className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">
+						<a
+							href="#"
+							className="text-blue-600 font-semibold hover:text-blue-700 hover:underline">
 							Sign up
 						</a>
 					</p>
