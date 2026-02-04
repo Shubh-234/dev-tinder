@@ -5,17 +5,17 @@ const authMiddleware = async (req, res, next) => {
 	const { token } = req.cookies;
 
 	if (!token) {
-		throw new Error("Invalid token");
+		return res.status(401).json({ message: "Authentication required" });
 	}
 
 	const decoded = jwt.verify(token, "secretkey");
 
 	if (!decoded) {
-		throw new Error("Invalid token");
+		return res.status(401).json({ message: "Invalid token" });
 	}
 	const user = await User.findById(decoded?.userId);
 	if (!user) {
-		throw new Error("Invalid token");
+		throw new Error("User not found");
 	}
 	req.user = user;
 	next();
