@@ -7,30 +7,38 @@ const Login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState("");
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
-		setIsLoading(true);
-		const requestOptions = {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ email, password }),
-			credentials: "include",
-		};
-		const response = await fetch(
-			"http://localhost:7777/api/auth/login",
-			requestOptions,
-		).then((res) => res.json());
-		console.log("response", response);
-		if (response.success && response?.user) {
-			dispatch(addUser(response.user));
-			navigate("/");
+		try {
+			setIsLoading(true);
+			const requestOptions = {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+				credentials: "include",
+			};
+			const response = await fetch(
+				"http://localhost:7777/api/auth/login",
+				requestOptions,
+			).then((res) => res.json());
+		
+			if (response.success && response?.user) {
+				dispatch(addUser(response.user));
+				navigate("/");
+			} else if (response.success === false) {
+				setError(response.message || "Login failed.");
+				setIsLoading(false);
+			}
+		} catch (error) {
+			console.error("Login error:", error);
+			setError("An error occurred during login. Please try again.");
+			setIsLoading(false);
 		}
-		setIsLoading(false);
-		alert(response.message);
 	};
 
 	return (
@@ -96,6 +104,7 @@ const Login = () => {
 							"Login"
 						)}
 					</button>
+					{error && <p className="text-red-500  mt-2">{error}</p>}
 				</form>
 
 				{/* Divider */}
