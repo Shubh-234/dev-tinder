@@ -29,7 +29,17 @@ const Feed = () => {
 	useEffect(() => {
 		getFeed();
 	}, []);
-	return <div></div>;
+	return (
+		<div>
+			{feedData && feedData.length > 0 && (
+				<div className="feed-container">
+					{feedData.map((item) => (
+						<div key={item._id}>{item?.firstName}</div>
+					))}
+				</div>
+			)}
+		</div>
+	);
 };
 
 export default Feed;
