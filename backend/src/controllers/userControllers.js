@@ -64,14 +64,14 @@ const updateUser = async (req, res) => {
 		}
 
 		const userToupdate = await User.findById(id);
-		
-		if(!userToupdate){
+
+		if (!userToupdate) {
 			return res.status(400).json({
 				success: false,
-				message: "User not found"
-			})
+				message: "User not found",
+			});
 		}
-		
+
 		const NOT_ALLOWED_UPDATES = [
 			"firstName",
 			"lastName",
@@ -114,11 +114,11 @@ const deleteUser = async (req, res) => {
 		const { _id } = req?.params;
 
 		const userTodelete = await User.findById(_id);
-		if(!userTodelete){
+		if (!userTodelete) {
 			return res.status(400).json({
 				success: false,
-				message: "User not found"
-			})
+				message: "User not found",
+			});
 		}
 
 		await User.findByIdAndDelete(_id);
@@ -135,110 +135,132 @@ const deleteUser = async (req, res) => {
 	}
 };
 
-const getUserConnectionRequests = async (req,res) => {
+const getUserConnectionRequests = async (req, res) => {
 	try {
 		const loggedInUser = req?.user;
 		const connetionRequests = await ConnectionRequestModel.find({
 			toUserId: loggedInUser._id,
-			status: "interested"
-		}).populate("fromUserId",["firstName","lastName","gender","age","photoUrl"])
+			status: "interested",
+		}).populate("fromUserId", [
+			"firstName",
+			"lastName",
+			"gender",
+			"age",
+			"photoUrl",
+		]);
 		return res.status(200).json({
 			success: true,
-			data: connetionRequests
-		})
+			data: connetionRequests,
+		});
 	} catch (error) {
-		console.error(`Error encountered in getUserConnectionRequests controller: ${error}`)
+		console.error(
+			`Error encountered in getUserConnectionRequests controller: ${error}`,
+		);
 		return res.status(500).json({
 			success: false,
-			message: "Internal server error"
-		})
+			message: "Internal server error",
+		});
 	}
-}
+};
 
-const getUserConnnections = async (req,res) => {
+const getUserConnnections = async (req, res) => {
 	try {
-		const {user} = req;
-		if(!user) {
+		const { user } = req;
+		if (!user) {
 			return res.status(404).json({
 				success: false,
-				message: "User not found"
-			})
+				message: "User not found",
+			});
 		}
 		const connections = await ConnectionRequestModel.find({
 			$or: [
-				{toUserId: user._id, status: "accepted"},
-				{fromUserId: user._id, status: "accepted"}
-			]
+				{ toUserId: user._id, status: "accepted" },
+				{ fromUserId: user._id, status: "accepted" },
+			],
 		})
-		.populate("fromUserId",["firstName","lastName","skills","age","gender"])
-		.populate("toUserId",["firstName","lastName","skills","age","gender"]);
-
+			.populate("fromUserId", [
+				"firstName",
+				"lastName",
+				"skills",
+				"age",
+				"gender",
+			])
+			.populate("toUserId", [
+				"firstName",
+				"lastName",
+				"skills",
+				"age",
+				"gender",
+			]);
 
 		const data = connections.map((connection) => {
-			if(connection.fromUserId._id.toString() === user?._id.toString()){
-				return connection.toUserId
+			if (connection.fromUserId._id.toString() === user?._id.toString()) {
+				return connection.toUserId;
 			}
 			return connection?.fromUserId;
-		})
+		});
 
-		
 		return res.status(200).json({
-			success : true,
-			message : "User connections retreived",
-			data
-		})
+			success: true,
+			message: "User connections retreived",
+			data,
+		});
 	} catch (error) {
 		console.error(`Error in getUserConnections controller ${error}`);
 		return res.status(500).json({
 			success: false,
-			message: "Internal server error"
-		})
+			message: "Internal server error",
+		});
 	}
-}
+};
 
-const getUserFeed = async (req,res) => {
+const getUserFeed = async (req, res) => {
 	try {
-		const {user} = req;
+		const { user } = req;
 		const page = req?.query?.page || 1;
-		let limit = req?.query?.limit || 5
+		let limit = req?.query?.limit || 5;
 		limit = limit > 100 ? 50 : limit;
 
-		const skip  = limit*(page-1);
+		const skip = limit * (page - 1);
 		const connectionRequests = await ConnectionRequestModel.find({
-			$or: [
-				{fromUserId: user._id},
-				{toUserId: user._id}
-			]
-		}).populate("fromUserId",["_id","firstName"]).populate("toUserId",["_id","firstName"])
+			$or: [{ fromUserId: user._id }, { toUserId: user._id }],
+		})
+			.populate("fromUserId", ["_id", "firstName"])
+			.populate("toUserId", ["_id", "firstName"]);
 
 		let notFetchUsers = [];
 		connectionRequests.map((connectionRequest) => {
-			if(connectionRequest.fromUserId?.id.toString() === user?._id.toString()){
-				notFetchUsers.push(connectionRequest.toUserId._id)
-			}else{
-				notFetchUsers.push(connectionRequest.fromUserId._id)
+			if (
+				connectionRequest.fromUserId?.id.toString() === user?._id.toString()
+			) {
+				notFetchUsers.push(connectionRequest.toUserId._id);
+			} else {
+				notFetchUsers.push(connectionRequest.fromUserId._id);
 			}
-		})
+		});
 
 		const userFeed = await User.find({
-			_id: {$nin: [user?._id,...notFetchUsers]}
-		}).select("firstName","lastName","age","gender","skills").skip(skip).limit(limit)
+			_id: { $nin: [user?._id, ...notFetchUsers] },
+		})
+			.select("firstName lastName age gender skills")
+			.skip(skip)
+			.limit(limit);
 
 		return res.status(200).json({
-			success : true,
-			message : "User feed retreived",
+			success: true,
+			message: "User feed retreived",
 			page: page,
 			limit,
-			data : userFeed
-		})
+			data: userFeed,
+		});
 	} catch (error) {
 		console.error(`Error in feed api : ${error}`);
 		return res.status(500).json({
-			success : false,
-			message : "Internal server error"
-		})
+			success: false,
+			message: "Internal server error",
+		});
 	}
-}
+};
 
 module.exports = {
 	getAllUsers,
@@ -247,5 +269,5 @@ module.exports = {
 	deleteUser,
 	getUserConnectionRequests,
 	getUserConnnections,
-	getUserFeed
+	getUserFeed,
 };
